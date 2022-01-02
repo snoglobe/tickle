@@ -11,12 +11,15 @@
 #define YSIZE 256
 
 #define SPRITE_MAX 256
+#define AUDIO_MAX 256
+
 #define SPRITE_X 16
 #define SPRITE_Y 16
 
 #define FPS 60
 
 Texture2D Sprites[SPRITE_MAX];
+Sound Sounds[AUDIO_MAX];
 
 static int Pixel(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     long x;
@@ -64,6 +67,33 @@ static int Line(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     assert(y2 < YSIZE);
 
     DrawLine((int)x1, (int)y1, (int)x2, (int)y2, GetColor((int)col));
+    return (JIM_OK);
+}
+
+static int Rect(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
+    long x;
+    long y;
+    long w;
+    long h;
+    long col;
+
+    if(argc != 6) {
+        Jim_WrongNumArgs(interp, 6, argv, "int, int, int, int, int");
+        return (JIM_ERR);
+    }
+
+    Jim_GetLong(interp, argv[1], &x);
+    Jim_GetLong(interp, argv[2], &y);
+    Jim_GetLong(interp, argv[3], &w);
+    Jim_GetLong(interp, argv[4], &h);
+    Jim_GetLong(interp, argv[5], &col);
+
+    assert(x < XSIZE);
+    assert(y < YSIZE);
+    assert(w < XSIZE);
+    assert(h < YSIZE);
+
+    DrawRectangle((int)x, (int)y, (int)w, (int)h, GetColor((int)col));
     return (JIM_OK);
 }
 
@@ -165,6 +195,51 @@ static int Clear(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     return (JIM_OK);
 }
 
+static int LoadSoundF(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
+    const char *path;
+    int len;
+    long slot;
+
+    if(argc != 3) {
+        Jim_WrongNumArgs(interp, 3, argv, "string, int");
+        return (JIM_ERR);
+    }
+
+    path = Jim_GetString(argv[1], &len);
+    Jim_GetLong(interp, argv[2], &slot);
+
+    Sounds[slot] = LoadSound(path);
+    return (JIM_OK);
+}
+
+static int PlaySoundF(Jim_Interp *interp, int argc, Jim_Obj *const *argv){
+    long slot;
+
+    if(argc != 2) {
+        Jim_WrongNumArgs(interp, 3, argv, "int");
+        return (JIM_ERR);
+    }
+
+    Jim_GetLong(interp, argv[1], &slot);
+    PlaySound(Sounds[slot]);
+
+    return (JIM_OK);
+}
+
+static int StopSoundF(Jim_Interp *interp, int argc, Jim_Obj *const *argv){
+    long slot;
+
+    if(argc != 2) {
+        Jim_WrongNumArgs(interp, 3, argv, "int");
+        return (JIM_ERR);
+    }
+
+    Jim_GetLong(interp, argv[1], &slot);
+    StopSound(Sounds[slot]);
+
+    return (JIM_OK);
+}
+
 int main(void)
 {
     Jim_Interp *interp;
@@ -177,8 +252,12 @@ int main(void)
 
     Jim_CreateCommand(interp, "Pixel",      Pixel,      NULL, NULL);
     Jim_CreateCommand(interp, "Line",       Line,       NULL, NULL);
+    Jim_CreateCommand(interp, "Rect",       Rect,       NULL, NULL);
     Jim_CreateCommand(interp, "Text",       Text,       NULL, NULL);
     Jim_CreateCommand(interp, "LoadSprite", LoadSprite, NULL, NULL);
+    Jim_CreateCommand(interp, "LoadSound",  LoadSoundF, NULL, NULL);
+    Jim_CreateCommand(interp, "PlaySound" , PlaySoundF, NULL, NULL);
+    Jim_CreateCommand(interp, "StopSound",  StopSoundF, NULL, NULL);
     Jim_CreateCommand(interp, "Sprite",     Sprite,     NULL, NULL);
     Jim_CreateCommand(interp, "KeyDown",    KeyDown,    NULL, NULL);
     Jim_CreateCommand(interp, "KeyPress",   KeyPress,   NULL, NULL);
@@ -209,7 +288,10 @@ int main(void)
 		exit(EXIT_FAILURE);
     }
 
-    InitWindow(XSIZE, YSIZE, "GAME");
+    int len;
+    const char* name = Jim_GetString(Jim_GetVariableStr(interp, "WindowTitle", 0), &len);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    InitWindow(XSIZE, YSIZE, name);
     SetTargetFPS(60);
 
     error = Jim_Eval(interp, "begin");
@@ -237,4 +319,3 @@ int main(void)
     CloseWindow();
     return 0;
 }
-
