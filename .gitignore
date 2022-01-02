@@ -3,3 +3,7 @@
 /test.png
 /tickle
 examples/pong/tickle
+*.o
+*.oo
+q.bat
+a.exe
