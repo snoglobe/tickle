@@ -37,7 +37,7 @@ static int Pixel(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
 
     assert(x < XSIZE);
     assert(y < YSIZE);
-    assert(col < 0xFFFFFF);
+    assert(col < 0xFFFFFFFF);
 
     DrawPixel((int)x, (int)y, GetColor((int)col));
     return (JIM_OK);
