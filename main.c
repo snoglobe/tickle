@@ -240,6 +240,16 @@ static int StopSoundF(Jim_Interp *interp, int argc, Jim_Obj *const *argv){
     return (JIM_OK);
 }
 
+static int GetFps(Jim_Interp *interp, int argc, Jim_Obj *const *argv){
+    if(argc != 1){
+        Jim_WrongNumArgs(interp, 1, argv, "");
+        return (JIM_ERR);
+    }
+
+    Jim_SetResult(interp, Jim_NewIntObj(interp, GetFPS()));
+    return (JIM_OK);
+}
+
 int main(void)
 {
     Jim_Interp *interp;
@@ -249,7 +259,8 @@ int main(void)
     assert(interp != NULL && "FATAL: Unable to create runtime.");
     
     Jim_RegisterCoreCommands(interp);
-
+    Jim_InitStaticExtensions(interp);
+    
     Jim_CreateCommand(interp, "Pixel",      Pixel,      NULL, NULL);
     Jim_CreateCommand(interp, "Line",       Line,       NULL, NULL);
     Jim_CreateCommand(interp, "Rect",       Rect,       NULL, NULL);
@@ -262,6 +273,7 @@ int main(void)
     Jim_CreateCommand(interp, "KeyDown",    KeyDown,    NULL, NULL);
     Jim_CreateCommand(interp, "KeyPress",   KeyPress,   NULL, NULL);
     Jim_CreateCommand(interp, "Clear",      Clear,      NULL, NULL);
+    Jim_CreateCommand(interp, "GetFPS",     GetFps,     NULL, NULL);
 
     Jim_SetGlobalVariableStr(interp, "White",      Jim_NewIntObj(interp, 0xf2f2f9ff));
     Jim_SetGlobalVariableStr(interp, "Black",      Jim_NewIntObj(interp, 0x161423ff));
@@ -301,6 +313,9 @@ int main(void)
 		Jim_FreeInterp(interp);
 		exit(EXIT_FAILURE);
     }
+
+    InitAudioDevice();
+
     while(!WindowShouldClose())
     {
         Jim_Eval(interp, "step");
@@ -317,5 +332,6 @@ int main(void)
 
     Jim_Eval(interp, "end");
     CloseWindow();
+    CloseAudioDevice();
     return 0;
 }
