@@ -305,6 +305,7 @@ int main(void)
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(XSIZE, YSIZE, name);
     SetTargetFPS(60);
+    InitAudioDevice();
 
     error = Jim_Eval(interp, "begin");
     if(error == JIM_ERR) {
@@ -313,8 +314,6 @@ int main(void)
 		Jim_FreeInterp(interp);
 		exit(EXIT_FAILURE);
     }
-
-    InitAudioDevice();
 
     while(!WindowShouldClose())
     {
