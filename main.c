@@ -151,6 +151,20 @@ static int Sprite(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     return (JIM_OK);
 }
 
+static int Clear(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
+    long col;
+
+    if(argc != 2) {
+        Jim_WrongNumArgs(interp, 2, argv, "int");
+        return (JIM_ERR);
+    }
+
+    Jim_GetLong(interp, argv[1], &col);
+
+    ClearBackground(GetColor(col));
+    return (JIM_OK);
+}
+
 int main(void)
 {
     Jim_Interp *interp;
@@ -168,6 +182,7 @@ int main(void)
     Jim_CreateCommand(interp, "Sprite",     Sprite,     NULL, NULL);
     Jim_CreateCommand(interp, "KeyDown",    KeyDown,    NULL, NULL);
     Jim_CreateCommand(interp, "KeyPress",   KeyPress,   NULL, NULL);
+    Jim_CreateCommand(interp, "Clear",      Clear,      NULL, NULL);
 
     Jim_SetGlobalVariableStr(interp, "White",      Jim_NewIntObj(interp, 0xf2f2f9ff));
     Jim_SetGlobalVariableStr(interp, "Black",      Jim_NewIntObj(interp, 0x161423ff));
@@ -208,7 +223,6 @@ int main(void)
     {
         Jim_Eval(interp, "step");
         BeginDrawing();
-        ClearBackground(WHITE);
         error = Jim_Eval(interp, "draw");
         EndDrawing();
         if(error == JIM_ERR) {
