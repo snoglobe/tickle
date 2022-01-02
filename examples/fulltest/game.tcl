@@ -58,14 +58,10 @@ proc draw {} {
     Line 0 136 64 144 $White
 
     # Draw Pixels
-    Pixel 0 152 $White
-    Pixel 2 152 $White
-    Pixel 4 152 $White
-    Pixel 6 152 $White
-    Pixel 8 152 $White
-    Pixel 10 152 $White
-    Pixel 12 152 $White
-    Pixel 14 152 $White
+    for {set x 0} { $x < 14 } { incr x; incr x } {
+        Pixel $x 152 $White
+    }
+    
 
     # Visual arrow key inputs
     if {[expr [KeyDown 263]] == 1} {
