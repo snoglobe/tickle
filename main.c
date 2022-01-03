@@ -21,6 +21,20 @@
 Texture2D Sprites[SPRITE_MAX];
 Sound Sounds[AUDIO_MAX];
 
+#define max(a, b) ((a)>(b)? (a) : (b))
+#define min(a, b) ((a)<(b)? (a) : (b))
+
+Vector2 ClampValue(Vector2 value, Vector2 min, Vector2 max)
+{
+    Vector2 result = value;
+    result.x = (result.x > max.x)? max.x : result.x;
+    result.x = (result.x < min.x)? min.x : result.x;
+    result.y = (result.y > max.y)? max.y : result.y;
+    result.y = (result.y < min.y)? min.y : result.y;
+    return result;
+}
+
+
 static inline Color GetPColor(int c) {
     switch(c){
         case 0:
@@ -344,6 +358,10 @@ int main(void)
     const char* name = Jim_GetString(Jim_GetVariableStr(interp, "WindowTitle", 0), &len);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(XSIZE, YSIZE, name);
+    SetWindowMinSize(XSIZE, YSIZE);
+
+    RenderTexture2D target = LoadRenderTexture(XSIZE, YSIZE);
+    SetTextureFilter(target.texture, FILTER_POINT);
     SetTargetFPS(60);
     InitAudioDevice();
 
@@ -357,9 +375,16 @@ int main(void)
 
     while(!WindowShouldClose())
     {
+        ClearBackground(BLACK);
+        float scale = min((float)GetScreenWidth()/XSIZE, (float)GetScreenHeight()/YSIZE);
         Jim_Eval(interp, "step");
         BeginDrawing();
+        BeginTextureMode(target);
         error = Jim_Eval(interp, "draw");
+        EndTextureMode();
+        DrawTexturePro(target.texture, (Rectangle){ 0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height },
+                           (Rectangle){ (GetScreenWidth() - ((float)XSIZE*scale))*0.5f, (GetScreenHeight() - ((float)YSIZE*scale))*0.5f,
+                           (float)XSIZE*scale, (float)YSIZE*scale }, (Vector2){ 0, 0 }, 0.0f, WHITE);
         EndDrawing();
         if(error == JIM_ERR) {
             Jim_MakeErrorMessage(interp);
@@ -370,6 +395,7 @@ int main(void)
     }
 
     Jim_Eval(interp, "end");
+    UnloadRenderTexture(target);
     CloseWindow();
     CloseAudioDevice();
     return 0;
