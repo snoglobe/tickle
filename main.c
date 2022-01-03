@@ -21,6 +21,46 @@
 Texture2D Sprites[SPRITE_MAX];
 Sound Sounds[AUDIO_MAX];
 
+static inline Color GetPColor(int c) {
+    switch(c){
+        case 0:
+            return GetColor(0x161423ff); // black
+        case 1: 
+            return GetColor(0xf2f2f9ff); // white
+        case 2:
+            return GetColor(0xd82323ff); // red
+        case 3:
+            return GetColor(0x98183cff); // maroon
+        case 4:
+            return GetColor(0xe76d14ff); // orange
+        case 5:
+            return GetColor(0xedb329ff); // gold
+        case 6:  
+            return GetColor(0xf7e26cff); // yellow
+        case 7:
+            return GetColor(0x1fcb23ff); // light green
+        case 8:
+            return GetColor(0x126d30ff); // green
+        case 9:
+            return GetColor(0x26ddddff); // light blue
+        case 10:
+            return GetColor(0x1867a0ff); // blue
+        case 11:
+            return GetColor(0x6a5fa0ff); // purple
+        case 12:
+            return GetColor(0xe98472ff); // pink
+        case 13:
+            return GetColor(0xf2c0a2ff); // beige
+        case 14:
+            return GetColor(0x934226ff); // light brown
+        case 15:
+            return GetColor(0x6c251eff); // brown
+        default:
+            printf("invalid color %d", c);
+            exit(EXIT_FAILURE);
+    }
+}
+
 static int Pixel(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     long x;
     long y;
@@ -39,7 +79,7 @@ static int Pixel(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     assert(y < YSIZE);
     assert(col < 0xFFFFFFFF);
 
-    DrawPixel((int)x, (int)y, GetColor((int)col));
+    DrawPixel((int)x, (int)y, GetPColor((int)col));
     return (JIM_OK);
 }   
 
@@ -66,7 +106,7 @@ static int Line(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     assert(x2 < XSIZE);
     assert(y2 < YSIZE);
 
-    DrawLine((int)x1, (int)y1, (int)x2, (int)y2, GetColor((int)col));
+    DrawLine((int)x1, (int)y1, (int)x2, (int)y2, GetPColor((int)col));
     return (JIM_OK);
 }
 
@@ -93,7 +133,7 @@ static int Rect(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     assert(w < XSIZE);
     assert(h < YSIZE);
 
-    DrawRectangle((int)x, (int)y, (int)w, (int)h, GetColor((int)col));
+    DrawRectangle((int)x, (int)y, (int)w, (int)h, GetPColor((int)col));
     return (JIM_OK);
 }
 
@@ -114,7 +154,7 @@ static int Text(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     text = Jim_GetString(argv[3], &len);
     Jim_GetLong(interp, argv[4], &col);
 
-    DrawText(text, (int)x, (int)y, 8, GetColor((int)col));
+    DrawText(text, (int)x, (int)y, 8, GetPColor((int)col));
     return (JIM_OK);
 }
 
@@ -191,7 +231,7 @@ static int Clear(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
 
     Jim_GetLong(interp, argv[1], &col);
 
-    ClearBackground(GetColor(col));
+    ClearBackground(GetPColor(col));
     return (JIM_OK);
 }
 
@@ -275,22 +315,22 @@ int main(void)
     Jim_CreateCommand(interp, "Clear",      Clear,      NULL, NULL);
     Jim_CreateCommand(interp, "GetFPS",     GetFps,     NULL, NULL);
 
-    Jim_SetGlobalVariableStr(interp, "White",      Jim_NewIntObj(interp, 0xf2f2f9ff));
-    Jim_SetGlobalVariableStr(interp, "Black",      Jim_NewIntObj(interp, 0x161423ff));
-    Jim_SetGlobalVariableStr(interp, "Purple",     Jim_NewIntObj(interp, 0x6a5fa0ff));
-    Jim_SetGlobalVariableStr(interp, "Orange",     Jim_NewIntObj(interp, 0xe76d14ff));
-    Jim_SetGlobalVariableStr(interp, "Gold",       Jim_NewIntObj(interp, 0xedb329ff));
-    Jim_SetGlobalVariableStr(interp, "Yellow",     Jim_NewIntObj(interp, 0xf7e26cff));
-    Jim_SetGlobalVariableStr(interp, "Brown",      Jim_NewIntObj(interp, 0x6c251eff));
-    Jim_SetGlobalVariableStr(interp, "LightBrown", Jim_NewIntObj(interp, 0x934226ff));
-    Jim_SetGlobalVariableStr(interp, "Blue",       Jim_NewIntObj(interp, 0x1867a0ff));
-    Jim_SetGlobalVariableStr(interp, "LightBlue",  Jim_NewIntObj(interp, 0x26ddddff));
-    Jim_SetGlobalVariableStr(interp, "Green",      Jim_NewIntObj(interp, 0x126d30ff));
-    Jim_SetGlobalVariableStr(interp, "LightGreen", Jim_NewIntObj(interp, 0x1fcb23ff));
-    Jim_SetGlobalVariableStr(interp, "Maroon",     Jim_NewIntObj(interp, 0x98183cff));
-    Jim_SetGlobalVariableStr(interp, "Red",        Jim_NewIntObj(interp, 0xd82323ff));
-    Jim_SetGlobalVariableStr(interp, "Pink",       Jim_NewIntObj(interp, 0xe98472ff));
-    Jim_SetGlobalVariableStr(interp, "Beige",      Jim_NewIntObj(interp, 0xf2c0a2ff));
+    Jim_SetGlobalVariableStr(interp, "White",      Jim_NewIntObj(interp, 1)); // 
+    Jim_SetGlobalVariableStr(interp, "Black",      Jim_NewIntObj(interp, 0)); // 
+    Jim_SetGlobalVariableStr(interp, "Purple",     Jim_NewIntObj(interp, 11)); //
+    Jim_SetGlobalVariableStr(interp, "Orange",     Jim_NewIntObj(interp, 4)); //
+    Jim_SetGlobalVariableStr(interp, "Gold",       Jim_NewIntObj(interp, 5)); //
+    Jim_SetGlobalVariableStr(interp, "Yellow",     Jim_NewIntObj(interp, 6)); //
+    Jim_SetGlobalVariableStr(interp, "Brown",      Jim_NewIntObj(interp, 15)); //
+    Jim_SetGlobalVariableStr(interp, "LightBrown", Jim_NewIntObj(interp, 14)); //
+    Jim_SetGlobalVariableStr(interp, "Blue",       Jim_NewIntObj(interp, 10)); //
+    Jim_SetGlobalVariableStr(interp, "LightBlue",  Jim_NewIntObj(interp, 9)); //
+    Jim_SetGlobalVariableStr(interp, "Green",      Jim_NewIntObj(interp, 8)); //
+    Jim_SetGlobalVariableStr(interp, "LightGreen", Jim_NewIntObj(interp, 7)); //
+    Jim_SetGlobalVariableStr(interp, "Maroon",     Jim_NewIntObj(interp, 3)); //
+    Jim_SetGlobalVariableStr(interp, "Red",        Jim_NewIntObj(interp, 2)); //
+    Jim_SetGlobalVariableStr(interp, "Pink",       Jim_NewIntObj(interp, 12)); //
+    Jim_SetGlobalVariableStr(interp, "Beige",      Jim_NewIntObj(interp, 13)); //
 
     error = Jim_EvalFile(interp, "game.tcl");
     if(error == JIM_ERR) {
