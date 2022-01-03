@@ -2,6 +2,7 @@ set WindowTitle "Tickle - FullTest"
 
 proc begin {} {
     LoadSprite "./test.png" 0
+    LoadSound "./examples/fulltest/test.wav" 0
 }
 
 proc step {} {
@@ -13,37 +14,27 @@ proc draw {} {
     # Set Clear Color to Black
     Clear $::Black
 
-    # Draw Text with all Colors
-    Text 0 0 "Greetings from Tickle!" $::White
-    Text 2 8 "Greetings from Tickle!" $::Purple
-    Text 4 16 "Greetings from Tickle!" $::Orange
-    Text 6 24 "Greetings from Tickle!" $::Gold
-    Text 8 32 "Greetings from Tickle!" $::Yellow
-    Text 10 40 "Greetings from Tickle!" $::Brown
-    Text 12 48 "Greetings from Tickle!" $::LightBrown
-    Text 14 56 "Greetings from Tickle!" $::Blue
-    Text 16 64 "Greetings from Tickle!" $::LightBlue
-    Text 18 72 "Greetings from Tickle!" $::Green
-    Text 20 80 "Greetings from Tickle!" $::LightGreen
-    Text 22 88 "Greetings from Tickle!" $::Maroon
-    Text 24 96 "Greetings from Tickle!" $::Red
-    Text 26 104 "Greetings from Tickle!" $::Pink
-    Text 28 112 "Greetings from Tickle!" $::Beige
+    Rect 0 0 114 8 1
+    for {set i 0} {$i < 15} {incr i} {
+         Text [expr {$i * 2}] [expr {$i * 8}] "Greetings from Tickle!" $i
+    }
 
     # Draw Sprite
     Sprite 0 [expr {256-16}] [expr {256-16}]
 
     # Draw Lines
-    Line 0 128 64 128 $::White
-    Line 0 136 64 144 $::White
+    Line 0 128 128 128 $::White
+    Line 0 136 128 144 $::White
+
+    Text 240 0 [GetFPS] $::White
 
     # Draw Pixels
-    for {set x 0} { $x < 14 } { incr x; incr x } {
+    for {set x 0} { $x < 128 } { incr x; incr x } {
         Pixel $x 152 $::White
     }
 
     # Visual arrow key inputs
-    if {[expr [KeyDown 263]] == 1} {
+    if {[expr [KeyDown 263]] == 1 || [expr [KeyDown 65]] == 1} {
         Rect 0 240 16 16 $::Blue
         Rect 4 244 8 8 $::White
     } else {
@@ -51,7 +42,7 @@ proc draw {} {
         Rect 4 244 8 8 $::Blue
     }
 
-    if {[expr [KeyDown 265]] == 1} {
+    if {[expr [KeyDown 265]] == 1 || [expr [KeyDown 87]] == 1} {
         Rect 18 222 16 16 $::Blue
         Rect 22 226 8 8 $::White
 
@@ -60,7 +51,7 @@ proc draw {} {
         Rect 22 226 8 8 $::Blue
     }
 
-    if {[expr [KeyDown 264]] == 1} {
+    if {[expr [KeyDown 264]] == 1 || [expr [KeyDown 83]] == 1} {
         Rect 18 240 16 16 $::Blue
         Rect 22 244 8 8 $::White
     } else {
@@ -68,11 +59,16 @@ proc draw {} {
         Rect 22 244 8 8 $::Blue
     }
     
-    if {[expr [KeyDown 262]] == 1} {
+    if {[expr [KeyDown 262]] == 1 || [expr [KeyDown 68]] == 1} {
         Rect 36 240 16 16 $::Blue
         Rect 40 244 8 8 $::White
     } else {
         Rect 36 240 16 16 $::White
         Rect 40 244 8 8 $::Blue
+    }
+
+    Text 64 246 "Press space to play sound" $::White
+    if {[expr [KeyPress 32]] == 1} {
+        PlaySound 0
     }
 }
