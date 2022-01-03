@@ -357,11 +357,12 @@ int main(void)
     int len;
     const char* name = Jim_GetString(Jim_GetVariableStr(interp, "WindowTitle", 0), &len);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(XSIZE, YSIZE, name);
+    InitWindow(512, 512, name);
     SetWindowMinSize(XSIZE, YSIZE);
-
+    Image logo = LoadImage("logo.png");
+    SetWindowIcon(logo);
     RenderTexture2D target = LoadRenderTexture(XSIZE, YSIZE);
-    SetTextureFilter(target.texture, FILTER_POINT);
+    SetTextureFilter(target.texture, 0);
     SetTargetFPS(60);
     InitAudioDevice();
 
