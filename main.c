@@ -69,6 +69,8 @@ static inline Color GetPColor(int c) {
             return GetColor(0x934226ff); // light brown
         case 15:
             return GetColor(0x6c251eff); // brown
+        case 17:
+            return GetColor(0x00000000);
         default: 
             printf("invalid color %d", c);
             exit(EXIT_FAILURE);
