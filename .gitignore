@@ -7,3 +7,4 @@ examples/pong/tickle
 *.oo
 q.bat
 a.exe
+progress.log
