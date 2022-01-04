@@ -23,10 +23,13 @@ proc draw {} {
     Sprite 0 [expr {256-16}] [expr {256-16}]
 
     # Draw Lines
-    Line 0 128 128 128 $::White
-    Line 0 136 128 144 $::White
+    Line 0 128 128 128 1 $::White
+    Line 0 136 128 144 2 $::White
 
     Text 240 0 [GetFPS] $::White
+
+    Circle 16 172 16 $::White
+    Rect 36 156 32 32 $::White
 
     # Draw Pixels
     for {set x 0} { $x < 128 } { incr x; incr x } {

@@ -89,8 +89,6 @@ static int Pixel(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     Jim_GetLong(interp, argv[2], &y);
     Jim_GetLong(interp, argv[3], &col);
 
-    assert(x < XSIZE);
-    assert(y < YSIZE);
     assert(col < 0xFFFFFFFF);
 
     DrawPixel((int)x, (int)y, GetPColor((int)col));
@@ -102,10 +100,11 @@ static int Line(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     long y1;
     long x2;
     long y2;
+    long t;
     long col;
 
-    if(argc != 6) {
-        Jim_WrongNumArgs(interp, 6, argv, "int, int, int, int, int");
+    if(argc != 7) {
+        Jim_WrongNumArgs(interp, 7, argv, "int, int, int, int, int, int");
         return (JIM_ERR);
     }
 
@@ -113,14 +112,13 @@ static int Line(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     Jim_GetLong(interp, argv[2], &y1);
     Jim_GetLong(interp, argv[3], &x2);
     Jim_GetLong(interp, argv[4], &y2);
-    Jim_GetLong(interp, argv[5], &col);
+    Jim_GetLong(interp, argv[5], &t);
+    Jim_GetLong(interp, argv[6], &col);
 
-    assert(x1 < XSIZE);
-    assert(y1 < YSIZE);
-    assert(x2 < XSIZE);
-    assert(y2 < YSIZE);
+    Vector2 v1 = {(float)x1, (float)y1};
+    Vector2 v2 = {(float)x2, (float)y2};
 
-    DrawLine((int)x1, (int)y1, (int)x2, (int)y2, GetPColor((int)col));
+    DrawLineEx(v1, v2, (float)t + 0.0f, GetPColor((int)col));
     return (JIM_OK);
 }
 
@@ -142,12 +140,27 @@ static int Rect(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     Jim_GetLong(interp, argv[4], &h);
     Jim_GetLong(interp, argv[5], &col);
 
-    assert(x < XSIZE);
-    assert(y < YSIZE);
-    assert(w < XSIZE);
-    assert(h < YSIZE);
-
     DrawRectangle((int)x, (int)y, (int)w, (int)h, GetPColor((int)col));
+    return (JIM_OK);
+}
+
+static int Circle(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
+    long x;
+    long y;
+    long r;
+    long col;
+
+    if(argc != 5) {
+        Jim_WrongNumArgs(interp, 5, argv, "int, int, int, int");
+        return (JIM_ERR);
+    }
+
+    Jim_GetLong(interp, argv[1], &x);
+    Jim_GetLong(interp, argv[2], &y);
+    Jim_GetLong(interp, argv[3], &r);
+    Jim_GetLong(interp, argv[4], &col);
+
+    DrawCircle((int)x, (int)y, (int)r, GetPColor((int)col));
     return (JIM_OK);
 }
 
@@ -318,6 +331,7 @@ int main(void)
     Jim_CreateCommand(interp, "Pixel",      Pixel,      NULL, NULL);
     Jim_CreateCommand(interp, "Line",       Line,       NULL, NULL);
     Jim_CreateCommand(interp, "Rect",       Rect,       NULL, NULL);
+    Jim_CreateCommand(interp, "Circle",     Circle,     NULL, NULL);
     Jim_CreateCommand(interp, "Text",       Text,       NULL, NULL);
     Jim_CreateCommand(interp, "LoadSprite", LoadSprite, NULL, NULL);
     Jim_CreateCommand(interp, "LoadSound",  LoadSoundF, NULL, NULL);
