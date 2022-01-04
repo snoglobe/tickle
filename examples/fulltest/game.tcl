@@ -2,7 +2,7 @@ set WindowTitle "Tickle - FullTest"
 
 proc begin {} {
     LoadSprite "./test.png" 0
-    LoadSound "./examples/fulltest/test.wav" 0
+    LoadSound "./test.wav" 0
 }
 
 proc step {} {

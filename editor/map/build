@@ -1,0 +1,2 @@
+cc main.c -I/usr/local/include -lraylib -ldl -pthread -lm -o tixel
+./tixel
