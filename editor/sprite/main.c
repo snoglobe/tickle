@@ -4,11 +4,34 @@
 #include "../../palette.h"
 #include <stdio.h>
 #include <stdint.h>
+#include <time.h>
+#include <errno.h>
 
 #undef RAYGUI_IMPLEMENTATION            // Avoid including raygui implementation again
 #define GUI_FILE_DIALOG_IMPLEMENTATION
 #include "gui_file_dialog.h"
 
+void LogCustom(int msgType, const char *text, va_list args)
+{
+    char timeStr[64] = { 0 };
+    time_t now = time(NULL);
+    struct tm *tm_info = localtime(&now);
+
+    strftime(timeStr, sizeof(timeStr), "%Y-%m-%d %H:%M:%S", tm_info);
+    printf("[%s] ", timeStr);
+
+    switch (msgType)
+    {
+        case LOG_INFO: printf("[INFO] : "); break;
+        case LOG_ERROR: printf("[ERROR]: "); break;
+        case LOG_WARNING: printf("[WARN] : "); break;
+        case LOG_DEBUG: printf("[DEBUG]: "); break;
+        default: break;
+    }
+
+    vprintf(text, args);
+    printf("\n");
+}
 
 static inline int GetPColor(int c) {
 	switch(c){
@@ -90,18 +113,16 @@ int main(int argc, char* argv[])
 	int screenWidth = 512;
 	int screenHeight = 512;
 
-	InitWindow(screenWidth, screenHeight, "Tixel");
-	//set the window hint to vsync
+    SetTraceLogCallback(LogCustom);
+
 	SetConfigFlags(FLAG_VSYNC_HINT);
+	InitWindow(screenWidth, screenHeight, "Tixel");
 	
 	Image logo = LoadImage("logo.png");
 	SetWindowIcon(logo);
 
 	GuiFileDialogState fileDialogState = InitGuiFileDialog(420, 310, GetWorkingDirectory(), false);
 	bool exitWindow = false;
-
-	char* filename = calloc(sizeof(int), 256);
-	strcpy(filename, "Filename");
 	int pickedColor = 0;
 	int tool = 0; // 0 = pencil, 1 = eraser
 	char *toolName = "Pencil";
@@ -116,13 +137,19 @@ int main(int argc, char* argv[])
 
 	while (!WindowShouldClose())
 	{
-		 if (fileDialogState.SelectFilePressed)
+        if (fileDialogState.SelectFilePressed)
         {
             // Load image file (if supported extension)
             if (IsFileExtension(fileDialogState.fileNameText, ".tx"))
             {
                 FILE *f = fopen(fileDialogState.fileNameText, "rb");
-				for(int x,i = 0; x < 16; x++){
+                if (NULL == f) {
+                    fprintf(stderr, 
+                            "Could not open: %s. %s\n", 
+                            fileDialogState.fileNameText, 
+                            strerror(errno));
+                }
+				for(int x = 0, i = 0; x < 16; x++){
 					for(int y = 0; y < 16; y++){
 						fseek(f, i++, SEEK_SET);
 						sprite[x][y] = fgetc(f);
@@ -141,44 +168,43 @@ int main(int argc, char* argv[])
 		ClearBackground(GetColor(GetPColor(0)));
 		for(int x = 0; x < 8; x++) {
 			for(int y = 0; y < 2; y++) {
-				if(GuiButton((Rectangle){280 + (x * 25), 20 + (y * 25), 24, 24}, "")) {
+				if(GuiButton((Rectangle){290 + (x * 25), 20 + (y * 25), 24, 24}, "")) {
 					pickedColor = y > 0 ? x + 8 : x;
 				}
 			}        
 		}
 		for(int x = 0; x < 8; x++) {
 			for(int y = 0; y < 2; y++) {
-				GuiDrawRectangle((Rectangle){280 + (x * 25), 20 + (y * 25), 24, 24}, 1, WHITE, GetColor(GetPColor(y > 0 ? x + 8 : x)));
+				GuiDrawRectangle((Rectangle){290 + (x * 25), 20 + (y * 25), 24, 24}, 1, WHITE, GetColor(GetPColor(y > 0 ? x + 8 : x)));
 			}        
 		}
-		GuiTextBox((Rectangle){20, 50, 130, 20}, filename, 255, true);
 		GuiDrawRectangle((Rectangle){0, 502, 512, 10}, 1, GetColor(GetPColor(pickedColor)), GetColor(GetPColor(pickedColor)));
-		if ( GuiButton( (Rectangle){ 20, 20, 60, 20 }, "#01#Load" ) ){
+		if ( GuiButton( (Rectangle){ 20, 20, 70, 50 }, "#01#Load" ) ){
 			fileDialogState.fileDialogActive = true;
 			
 		}
-		if ( GuiButton( (Rectangle){ 90, 20, 60, 20 }, "#02#Save" ) ){
-			FILE *f = fopen(filename, "wb");
+		if ( GuiButton( (Rectangle){ 95, 20, 70, 50 }, "#02#Save" ) ){
+			FILE *f = fopen(fileDialogState.fileNameText, "wb");
 			fwrite(sprite, sizeof(char), sizeof(sprite), f);
 			fclose(f);
 		}
-		if ( GuiButton( (Rectangle){ 160, 20, 34, 24 }, "#22#" ) ){
+		if ( GuiButton( (Rectangle){ 175, 20, 34, 24 }, "#22#" ) ){
 			tool = 0;
 			toolName = "Pencil";
 		}
-		if ( GuiButton( (Rectangle){ 160, 46, 34, 24 }, "#28#" ) ){
+		if ( GuiButton( (Rectangle){ 175, 46, 34, 24 }, "#28#" ) ){
 			tool = 1;
 			toolName = "Eraser";
 		}
-		if ( GuiButton( (Rectangle){ 198, 20, 34, 24 }, "#29#" ) ){
+		if ( GuiButton( (Rectangle){ 213, 20, 34, 24 }, "#29#" ) ){
 			tool = 2;
 			toolName = "Fill";
 		}
-		if ( GuiButton( (Rectangle){ 198, 46, 34, 24 }, "#25#" ) ){
+		if ( GuiButton( (Rectangle){ 213, 46, 34, 24 }, "#25#" ) ){
 			tool = 3;
 			toolName = "Replace";
 		}
-		if ( GuiButton( (Rectangle){ 236, 20, 34, 50 }, "#143#" ) ){
+		if ( GuiButton( (Rectangle){ 251, 20, 34, 50 }, "#143#" ) ){
 			for(int x = 0; x < 16; x++){
 				for(int y = 0; y < 16; y++){
 					sprite[x][y] = 17;
