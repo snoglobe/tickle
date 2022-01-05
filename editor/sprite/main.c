@@ -106,11 +106,24 @@ int main(int argc, char* argv[])
             fwrite(sprite, sizeof(char), sizeof(sprite), f);
             fclose(f);
         }
-        if ( GuiButton( (Rectangle){ 160, 20, 50, 50 }, "#22#" ) ){
+        if ( GuiButton( (Rectangle){ 160, 20, 34, 24 }, "#22#" ) ){
             tool = 0;
         }
-        if ( GuiButton( (Rectangle){ 220, 20, 50, 50 }, "#28#" ) ){
+        if ( GuiButton( (Rectangle){ 160, 46, 34, 24 }, "#28#" ) ){
             tool = 1;
+        }
+        if ( GuiButton( (Rectangle){ 198, 20, 34, 24 }, "#29#" ) ){
+            tool = 3;
+        }
+        if ( GuiButton( (Rectangle){ 198, 46, 34, 24 }, "#25#" ) ){
+            tool = 4;
+        }
+        if ( GuiButton( (Rectangle){ 236, 20, 34, 50 }, "#143#" ) ){
+            for(int x = 0; x < 16; x++){
+                for(int y = 0; y < 16; y++){
+                    sprite[x][y] = 17;
+                }
+            }
         }
         for(int x = 0; x < 16; x++) {
             for(int y = 0; y < 16; y++) {
