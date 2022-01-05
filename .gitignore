@@ -8,3 +8,5 @@ examples/pong/tickle
 q.bat
 a.exe
 progress.log
+editor/sound/tixfx.exe
+editor/sprite/tixel.exe
