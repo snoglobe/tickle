@@ -1,1 +1,1 @@
- cc main.c -O3 -I/usr/local/lib -ljim -lraylib -lm -ldl -lutil -pthread -o tickle
+ cc main.c -O3 -I/usr/local/lib -ljim -lraylib -lm -lutil -pthread -ldl -o tickle
