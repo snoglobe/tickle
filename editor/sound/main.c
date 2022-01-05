@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
     char* filename = calloc(sizeof(int), 256);
     strcpy(filename, "Filename");
     int pickedColor = 0;
-    int tool = 0; // 0 = pencil, 1 = eraser
+    int tool = 0; // 0 = pencil, 1 = eraser, 2 = fill, 3 = replace color, 4 = clear
 
     for(int x = 0; x < 16; x++){
         for(int y = 0; y < 16; y++){
@@ -120,8 +120,14 @@ int main(int argc, char* argv[])
                     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
                         if(!tool){
                             sprite[x][y] = pickedColor;
-                        } else {
+                        } else if (tool == 1) {
                             sprite[x][y] = 17;
+                        } else if (tool == 2) {
+                            //sprite[x][y] = pickedColor;
+                        } else if (tool == 3) {
+                            //sprite[x][y] = pickedColor;
+                        } else if (tool == 4) {
+                            sprite[x][y] = pickedColor;
                         }
                     }
                 }
