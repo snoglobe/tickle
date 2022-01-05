@@ -7,3 +7,7 @@ The tickle binary must be run with a game.tcl file present in the directory or i
 * Export to HTML5 (emscripten or something)
 * Map Editor
 * Sound/Music Editor
+
+# DEPENDENCIES
+* [jim jim.tcl.tk]
+* raylib
