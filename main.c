@@ -233,6 +233,24 @@ static int KeyDown(Jim_Interp *interp, int argc, Jim_Obj *const *argv){
     return (JIM_OK);
 }
 
+static int PointIn(Jim_Interp *interp, int argc, Jim_Obj *const *argv){
+    long x, y, radius, x2, y2;
+
+    if(argc != 6) {
+        Jim_WrongNumArgs(interp, 6, argv, "int, int, int, int, int");
+        return (JIM_ERR);
+    }
+
+    Jim_GetLong(interp, argv[1], &x);
+    Jim_GetLong(interp, argv[2], &y);
+    Jim_GetLong(interp, argv[3], &radius);
+    Jim_GetLong(interp, argv[4], &x2);
+    Jim_GetLong(interp, argv[5], &y2);
+
+    Jim_SetResultBool(interp, CheckCollisionPointCircle((Vector2){x2, y2}, (Vector2){x, y}, radius));
+    return (JIM_OK);
+}
+
 static int KeyPress(Jim_Interp *interp, int argc, Jim_Obj *const *argv){
     long key;
 
@@ -359,6 +377,7 @@ int main(void)
     Jim_CreateCommand(interp, "KeyPress",   KeyPress,   NULL, NULL);
     Jim_CreateCommand(interp, "Clear",      Clear,      NULL, NULL);
     Jim_CreateCommand(interp, "GetFPS",     GetFps,     NULL, NULL);
+    Jim_CreateCommand(interp, "PointIn",    PointIn,    NULL, NULL);
 
     Jim_SetGlobalVariableStr(interp, "White",      Jim_NewIntObj(interp, 1)); // 
     Jim_SetGlobalVariableStr(interp, "Black",      Jim_NewIntObj(interp, 0)); // 
