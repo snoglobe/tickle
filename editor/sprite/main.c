@@ -64,6 +64,7 @@ int main(int argc, char* argv[])
     strcpy(filename, "Filename");
     int pickedColor = 0;
     int tool = 0; // 0 = pencil, 1 = eraser
+    bool grid = false;
 
     for(int x = 0; x < 16; x++){
         for(int y = 0; y < 16; y++){
@@ -118,12 +119,15 @@ int main(int argc, char* argv[])
         if ( GuiButton( (Rectangle){ 198, 46, 34, 24 }, "#25#" ) ){
             tool = 4;
         }
-        if ( GuiButton( (Rectangle){ 236, 20, 34, 50 }, "#143#" ) ){
+        if ( GuiButton( (Rectangle){ 236, 20, 34, 24 }, "#143#" ) ){
             for(int x = 0; x < 16; x++){
                 for(int y = 0; y < 16; y++){
                     sprite[x][y] = 17;
                 }
             }
+        }
+        if ( GuiButton( (Rectangle){ 236, 46, 34, 24 }, "#97#" ) ){
+            grid = !grid;
         }
         for(int x = 0; x < 16; x++) {
             for(int y = 0; y < 16; y++) {
@@ -138,8 +142,8 @@ int main(int argc, char* argv[])
                         }
                     }
                 }
-                GuiDrawRectangle((Rectangle){55 + (x * 25), 90 + (y * 25), 25, 25}, 0, (x + y) % 2 == 0 ? GRAY : WHITE, (x + y) % 2 == 0 ? GRAY : WHITE);
-                GuiDrawRectangle((Rectangle){55 + (x * 25), 90 + (y * 25), 25, 25}, 0, GetColor(GetPColor(sprite[x][y])), GetColor(GetPColor(sprite[x][y])));
+                GuiDrawRectangle((Rectangle){55 + (x * 25), 90 + (y * 25), 25, 25}, 2, (x + y) % 2 == 0 ? GetColor(TLGREY) : GetColor(TWHITE), grid ? (x + y) % 2 == 0 ? GetColor(TDGREY) : GetColor(TWHITE) : GetColor(TBLACK));
+                GuiDrawRectangle((Rectangle){55 + (x * 25), 90 + (y * 25), 25, 25}, 2, GetColor(GetPColor(sprite[x][y])), GetColor(GetPColor(sprite[x][y])));
             }        
         }
         EndDrawing();
