@@ -46,17 +46,10 @@ static inline int GetPColor(int c) {
     }
 }
 
-static inline int lighten(int col, int amt) {
-    int r = (col >> 16) + amt; 
-    int b = ((col >> 8) & 0x00FF0000) + amt;
-    int g = (col & 0x0000FF00) + amt;  
-    return (g | (b << 8) | (r << 16)) | 0x000000FF;
-}
-
-uint8_t sprite[16][16] = {};
+uint8_t sprite[16][16];
 
 int main(int argc, char* argv[])
-{
+{    
     int screenWidth = 512;
     int screenHeight = 512;
 
@@ -66,7 +59,7 @@ int main(int argc, char* argv[])
     char* filename = calloc(sizeof(int), 256);
     strcpy(filename, "Filename");
     int pickedColor = 0;
-    int tool; // 0 = pencil, 1 = eraser
+    int tool = 0; // 0 = pencil, 1 = eraser
 
     for(int x = 0; x < 16; x++){
         for(int y = 0; y < 16; y++){
@@ -77,9 +70,7 @@ int main(int argc, char* argv[])
     while (!WindowShouldClose())
     {
         BeginDrawing();
-
         ClearBackground(GetColor(GetPColor(0)));
-
         for(int x = 0; x < 8; x++) {
             for(int y = 0; y < 2; y++) {
                 if(GuiButton((Rectangle){280 + (x * 25), 20 + (y * 25), 24, 24}, "")) {
@@ -87,20 +78,21 @@ int main(int argc, char* argv[])
                 }
             }        
         }
-
         for(int x = 0; x < 8; x++) {
             for(int y = 0; y < 2; y++) {
                 GuiDrawRectangle((Rectangle){280 + (x * 25), 20 + (y * 25), 24, 24}, 1, WHITE, GetColor(GetPColor(y > 0 ? x + 8 : x)));
             }        
         }
-
         GuiTextBox((Rectangle){20, 50, 130, 20}, filename, 255, true);
-
         GuiDrawRectangle((Rectangle){72, 72, 10, 10}, 1, GetColor(GetPColor(pickedColor)), GetColor(GetPColor(pickedColor)));
-
         if ( GuiButton( (Rectangle){ 20, 20, 60, 20 }, "#01#Load" ) ){
-            FILE *f = fopen(filename, "wb");
-            fread(&sprite, sizeof(char),  sizeof(sprite), f);
+            FILE *f = fopen(filename, "rb");
+            for(int x,i = 0; x < 16; x++){
+                for(int y = 0; y < 16; y++){
+                    fseek(f, i++, SEEK_SET);
+                    sprite[x][y] = fgetc(f);
+                }
+            }
             fclose(f);
         }
         if ( GuiButton( (Rectangle){ 90, 20, 60, 20 }, "#02#Save" ) ){
@@ -114,7 +106,6 @@ int main(int argc, char* argv[])
         if ( GuiButton( (Rectangle){ 220, 20, 50, 50 }, "#28#" ) ){
             tool = 1;
         }
-
         for(int x = 0; x < 16; x++) {
             for(int y = 0; y < 16; y++) {
                 Vector2 mousePoint = GetMousePosition();
@@ -132,11 +123,8 @@ int main(int argc, char* argv[])
                 GuiDrawRectangle((Rectangle){55 + (x * 25), 90 + (y * 25), 25, 25}, 0, GetColor(GetPColor(sprite[x][y])), GetColor(GetPColor(sprite[x][y])));
             }        
         }
-
         EndDrawing();
     }
-
     CloseWindow();
-
     return 0;
 }
