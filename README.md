@@ -9,5 +9,5 @@ The tickle binary must be run with a game.tcl file present in the directory or i
 * Sound/Music Editor
 
 # DEPENDENCIES
-* [jim](jim.tcl.tk)
+* [jim](https://jim.tcl.tk)
 * raylib
