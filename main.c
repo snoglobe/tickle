@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "palette.h"
 
 #define JIM_EMBEDDED
 #include <jim.h>
@@ -38,37 +39,37 @@ Vector2 ClampValue(Vector2 value, Vector2 min, Vector2 max)
 static inline Color GetPColor(int c) {
     switch(c){
         case 0:
-            return GetColor(0x161423ff); // black
+            return GetColor(TBLACK); // black
         case 1: 
-            return GetColor(0xf2f2f9ff); // white
+            return GetColor(TWHITE); // white
         case 2:
-            return GetColor(0xd82323ff); // red
+            return GetColor(TRED); // red
         case 3:
-            return GetColor(0x98183cff); // maroon
+            return GetColor(TMAROON); // maroon
         case 4:
-            return GetColor(0xe76d14ff); // orange
+            return GetColor(TORANGE); // orange
         case 5:
-            return GetColor(0xedb329ff); // gold
+            return GetColor(TGOLD); // gold
         case 6:  
-            return GetColor(0xf7e26cff); // yellow
+            return GetColor(TYELLOW); // yellow
         case 7:
-            return GetColor(0x1fcb23ff); // light green
+            return GetColor(TLGREEN); // light green
         case 8:
-            return GetColor(0x126d30ff); // green
+            return GetColor(TGREEN); // green
         case 9:
-            return GetColor(0x26ddddff); // light blue
+            return GetColor(TLBLUE); // light blue
         case 10:
-            return GetColor(0x1867a0ff); // blue
+            return GetColor(TBLUE); // blue
         case 11:
-            return GetColor(0x6a5fa0ff); // purple
+            return GetColor(TDPURPLE); // purple
         case 12:
-            return GetColor(0xe98472ff); // pink
+            return GetColor(TPINK); // pink
         case 13:
-            return GetColor(0xf2c0a2ff); // beige
+            return GetColor(TBEIGE); // beige
         case 14:
-            return GetColor(0x934226ff); // light brown
+            return GetColor(TLGREY); // light grey
         case 15:
-            return GetColor(0x6c251eff); // brown
+            return GetColor(TDGREY); // dark grey
         case 17:
             return GetColor(0x00000000);
         default: 
