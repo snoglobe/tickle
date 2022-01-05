@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "palette.h"
+#include <stdint.h>
+#include <inttypes.h>
 
 #define JIM_EMBEDDED
 #include <jim.h>
@@ -201,7 +203,19 @@ static int LoadSprite(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     path = Jim_GetString(argv[1], &len);
     Jim_GetLong(interp, argv[2], &slot);
 
-    Sprites[slot] = LoadTexture(path);
+    unsigned int sprite[16][16];
+    FILE *f = fopen(path, "rb");
+    for(int x,i = 0; x < 16; x++){
+        for(int y = 0; y < 16; y++){
+            fseek(f, i++, SEEK_SET);
+            sprite[y][x] = __builtin_bswap32(IGetPColor(fgetc(f)));
+        }
+    }
+    fclose(f);
+
+    Image t = (Image){sprite, 16, 16, 1, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8};
+
+    Sprites[slot] = LoadTextureFromImage(t);
     return (JIM_OK);
 }
 

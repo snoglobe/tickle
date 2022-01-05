@@ -17,3 +17,44 @@
 #define TMAROON  0xa63d57ff
 #define TDPURPLE 0x36354dff
 
+static inline int IGetPColor(int c) {
+    switch(c){
+        case 0:
+            return (TBLACK); // black
+        case 1: 
+            return (TWHITE); // white
+        case 2:
+            return (TRED); // red
+        case 3:
+            return (TMAROON); // maroon
+        case 4:
+            return (TORANGE); // orange
+        case 5:
+            return (TGOLD); // gold
+        case 6:  
+            return (TYELLOW); // yellow
+        case 7:
+            return (TLGREEN); // light green
+        case 8:
+            return (TGREEN); // green
+        case 9:
+            return (TLBLUE); // light blue
+        case 10:
+            return (TBLUE); // blue
+        case 11:
+            return (TDPURPLE); // purple
+        case 12:
+            return (TPINK); // pink
+        case 13:
+            return (TBEIGE); // beige
+        case 14:
+            return (TLGREY); // light brown
+        case 15:
+            return (TDGREY); // brown
+        case 17:
+            return (0x00000000); // transparent
+        default: 
+            printf("invalid color %d", c);
+            exit(EXIT_FAILURE);
+    }
+}

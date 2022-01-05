@@ -5,48 +5,6 @@
 #include <stdio.h>
 #include <stdint.h>
 
-static inline int GetPColor(int c) {
-    switch(c){
-        case 0:
-            return (TBLACK); // black
-        case 1: 
-            return (TWHITE); // white
-        case 2:
-            return (TRED); // red
-        case 3:
-            return (TMAROON); // maroon
-        case 4:
-            return (TORANGE); // orange
-        case 5:
-            return (TGOLD); // gold
-        case 6:  
-            return (TYELLOW); // yellow
-        case 7:
-            return (TLGREEN); // light green
-        case 8:
-            return (TGREEN); // green
-        case 9:
-            return (TLBLUE); // light blue
-        case 10:
-            return (TBLUE); // blue
-        case 11:
-            return (TDPURPLE); // purple
-        case 12:
-            return (TPINK); // pink
-        case 13:
-            return (TBEIGE); // beige
-        case 14:
-            return (TLGREY); // light brown
-        case 15:
-            return (TDGREY); // brown
-        case 17:
-            return (0x00000000); // transparent
-        default: 
-            printf("invalid color %d", c);
-            exit(EXIT_FAILURE);
-    }
-}
-
 uint8_t sprite[16][16];
 
 int main(int argc, char* argv[])
@@ -73,7 +31,7 @@ int main(int argc, char* argv[])
     while (!WindowShouldClose())
     {
         BeginDrawing();
-        ClearBackground(GetColor(GetPColor(0)));
+        ClearBackground(GetColor(IGetPColor(0)));
         for(int x = 0; x < 8; x++) {
             for(int y = 0; y < 2; y++) {
                 if(GuiButton((Rectangle){280 + (x * 25), 20 + (y * 25), 24, 24}, "")) {
@@ -83,11 +41,11 @@ int main(int argc, char* argv[])
         }
         for(int x = 0; x < 8; x++) {
             for(int y = 0; y < 2; y++) {
-                GuiDrawRectangle((Rectangle){280 + (x * 25), 20 + (y * 25), 24, 24}, 1, WHITE, GetColor(GetPColor(y > 0 ? x + 8 : x)));
+                GuiDrawRectangle((Rectangle){280 + (x * 25), 20 + (y * 25), 24, 24}, 1, WHITE, GetColor(IGetPColor(y > 0 ? x + 8 : x)));
             }        
         }
         GuiTextBox((Rectangle){20, 50, 130, 20}, filename, 255, true);
-        GuiDrawRectangle((Rectangle){0, 502, 512, 10}, 1, GetColor(GetPColor(pickedColor)), GetColor(GetPColor(pickedColor)));
+        GuiDrawRectangle((Rectangle){0, 502, 512, 10}, 1, GetColor(IGetPColor(pickedColor)), GetColor(IGetPColor(pickedColor)));
         if ( GuiButton( (Rectangle){ 20, 20, 60, 20 }, "#01#Load" ) ){
             FILE *f = fopen(filename, "rb");
             for(int x,i = 0; x < 16; x++){
@@ -123,7 +81,7 @@ int main(int argc, char* argv[])
                     }
                 }
                 GuiDrawRectangle((Rectangle){55 + (x * 25), 90 + (y * 25), 25, 25}, 0, (x + y) % 2 == 0 ? GRAY : WHITE, (x + y) % 2 == 0 ? GRAY : WHITE);
-                GuiDrawRectangle((Rectangle){55 + (x * 25), 90 + (y * 25), 25, 25}, 0, GetColor(GetPColor(sprite[x][y])), GetColor(GetPColor(sprite[x][y])));
+                GuiDrawRectangle((Rectangle){55 + (x * 25), 90 + (y * 25), 25, 25}, 0, GetColor(IGetPColor(sprite[x][y])), GetColor(IGetPColor(sprite[x][y])));
             }        
         }
         EndDrawing();

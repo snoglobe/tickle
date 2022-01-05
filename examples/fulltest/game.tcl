@@ -1,7 +1,7 @@
 set WindowTitle "Tickle - FullTest"
 
 proc begin {} {
-    LoadSprite "./test.png" 0
+    LoadSprite "./tickle.tx" 0
     LoadSound "./test.wav" 0
 }
 
