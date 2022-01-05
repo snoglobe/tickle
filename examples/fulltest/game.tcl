@@ -15,7 +15,7 @@ proc draw {} {
     Clear $::Black
 
     Rect 0 0 114 8 1
-    for {set i 0} {$i < 15} {incr i} {
+    for {set i 0} {$i < 16} {incr i} {
          Text [expr {$i * 2}] [expr {$i * 8}] "Greetings from Tickle!" $i
     }
 

@@ -1,43 +1,44 @@
 #include <raylib.h>
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.c"
+#include "../../palette.h"
 #include <stdio.h>
 #include <stdint.h>
 
 static inline int GetPColor(int c) {
     switch(c){
         case 0:
-            return (0x161423ff); // black
+            return (TBLACK); // black
         case 1: 
-            return (0xf2f2f9ff); // white
+            return (TWHITE); // white
         case 2:
-            return (0xd82323ff); // red
+            return (TRED); // red
         case 3:
-            return (0x98183cff); // maroon
+            return (TMAROON); // maroon
         case 4:
-            return (0xe76d14ff); // orange
+            return (TORANGE); // orange
         case 5:
-            return (0xedb329ff); // gold
+            return (TGOLD); // gold
         case 6:  
-            return (0xf7e26cff); // yellow
+            return (TYELLOW); // yellow
         case 7:
-            return (0x1fcb23ff); // light green
+            return (TLGREEN); // light green
         case 8:
-            return (0x126d30ff); // green
+            return (TGREEN); // green
         case 9:
-            return (0x26ddddff); // light blue
+            return (TLBLUE); // light blue
         case 10:
-            return (0x1867a0ff); // blue
+            return (TBLUE); // blue
         case 11:
-            return (0x6a5fa0ff); // purple
+            return (TDPURPLE); // purple
         case 12:
-            return (0xe98472ff); // pink
+            return (TPINK); // pink
         case 13:
-            return (0xf2c0a2ff); // beige
+            return (TBEIGE); // beige
         case 14:
-            return (0x934226ff); // light brown
+            return (TLGREY); // light brown
         case 15:
-            return (0x6c251eff); // brown
+            return (TDGREY); // brown
         case 17:
             return (0x00000000); // transparent
         default: 
@@ -67,6 +68,8 @@ int main(int argc, char* argv[])
         }
     }
 
+    GuiLoadStyle("tickle.rgs");
+
     while (!WindowShouldClose())
     {
         BeginDrawing();
@@ -84,7 +87,7 @@ int main(int argc, char* argv[])
             }        
         }
         GuiTextBox((Rectangle){20, 50, 130, 20}, filename, 255, true);
-        GuiDrawRectangle((Rectangle){72, 72, 10, 10}, 1, GetColor(GetPColor(pickedColor)), GetColor(GetPColor(pickedColor)));
+        GuiDrawRectangle((Rectangle){0, 502, 512, 10}, 1, GetColor(GetPColor(pickedColor)), GetColor(GetPColor(pickedColor)));
         if ( GuiButton( (Rectangle){ 20, 20, 60, 20 }, "#01#Load" ) ){
             FILE *f = fopen(filename, "rb");
             for(int x,i = 0; x < 16; x++){
