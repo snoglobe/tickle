@@ -1,4 +1,4 @@
-set WindowTitle "pnog"
+set WindowTitle "Example - pnog"
 set ballX 128
 set ballY 128
 set ballXV 1
