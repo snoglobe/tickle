@@ -124,6 +124,7 @@ int main(int argc, char* argv[])
 	GuiFileDialogState fileDialogState = InitGuiFileDialog(420, 310, GetWorkingDirectory(), false);
 	bool exitWindow = false;
 	int pickedColor = 0;
+    bool grid = true;
 	int tool = 0; // 0 = pencil, 1 = eraser
 	char *toolName = "Pencil";
 
@@ -168,14 +169,14 @@ int main(int argc, char* argv[])
 		ClearBackground(GetColor(GetPColor(0)));
 		for(int x = 0; x < 8; x++) {
 			for(int y = 0; y < 2; y++) {
-				if(GuiButton((Rectangle){290 + (x * 25), 20 + (y * 25), 24, 24}, "")) {
+				if(GuiButton((Rectangle){290 + (x * 25), 20 + (y * 26), 24, 24}, "")) {
 					pickedColor = y > 0 ? x + 8 : x;
 				}
 			}        
 		}
 		for(int x = 0; x < 8; x++) {
 			for(int y = 0; y < 2; y++) {
-				GuiDrawRectangle((Rectangle){290 + (x * 25), 20 + (y * 25), 24, 24}, 1, WHITE, GetColor(GetPColor(y > 0 ? x + 8 : x)));
+				GuiDrawRectangle((Rectangle){290 + (x * 25), 20 + (y * 26), 24, 24}, 1, WHITE, GetColor(GetPColor(y > 0 ? x + 8 : x)));
 			}        
 		}
 		GuiDrawRectangle((Rectangle){0, 502, 512, 10}, 1, GetColor(GetPColor(pickedColor)), GetColor(GetPColor(pickedColor)));
@@ -188,29 +189,33 @@ int main(int argc, char* argv[])
 			fwrite(sprite, sizeof(char), sizeof(sprite), f);
 			fclose(f);
 		}
-		if ( GuiButton( (Rectangle){ 175, 20, 34, 24 }, "#22#" ) ){
+		if ( GuiButton( (Rectangle){ 170, 20, 36, 24 }, "#22#" ) ){
 			tool = 0;
 			toolName = "Pencil";
 		}
-		if ( GuiButton( (Rectangle){ 175, 46, 34, 24 }, "#28#" ) ){
+		if ( GuiButton( (Rectangle){ 170, 46, 36, 24 }, "#28#" ) ){
 			tool = 1;
 			toolName = "Eraser";
 		}
-		if ( GuiButton( (Rectangle){ 213, 20, 34, 24 }, "#29#" ) ){
+		if ( GuiButton( (Rectangle){ 211, 20, 35, 24 }, "#29#" ) ){
 			tool = 2;
 			toolName = "Fill";
 		}
-		if ( GuiButton( (Rectangle){ 213, 46, 34, 24 }, "#25#" ) ){
+		if ( GuiButton( (Rectangle){ 211, 46, 35, 24 }, "#25#" ) ){
 			tool = 3;
 			toolName = "Replace";
 		}
-		if ( GuiButton( (Rectangle){ 251, 20, 34, 50 }, "#143#" ) ){
+		if ( GuiButton( (Rectangle){ 251, 20, 35, 24 }, "#143#" ) ){
 			for(int x = 0; x < 16; x++){
 				for(int y = 0; y < 16; y++){
 					sprite[x][y] = 17;
 				}
 			}
 		}
+        if ( GuiButton( (Rectangle){ 251, 46, 35, 24 }, "#97#" ) ){
+			grid = !grid;
+		}
+
 		for(int x = 0; x < 16; x++) {
 			for(int y = 0; y < 16; y++) {
 				Vector2 mousePoint = GetMousePosition();
@@ -233,9 +238,12 @@ int main(int argc, char* argv[])
 					}
 					if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && tool == 0) sprite[x][y] = 17;
 				}
-				GuiDrawRectangle((Rectangle){55 + (x * 25), 90 + (y * 25), 25, 25}, 0, (x + y) % 2 == 0 ? GRAY : WHITE, (x + y) % 2 == 0 ? GRAY : WHITE);
+				GuiDrawRectangle((Rectangle){55 + (x * 25), 90 + (y * 25), 25, 25}, 1, 
+                    grid ? (x + y) % 2 == 0 ? GetColor(TLGREY) : GetColor(TDGREY)
+                        : GetColor(TWHITE), 
+                    grid ? (x + y) % 2 == 0 ? GetColor(TLGREY) : GetColor(TDGREY) 
+                        : GetColor(GetPColor(17)));
 				GuiDrawRectangle((Rectangle){55 + (x * 25), 90 + (y * 25), 25, 25}, 0, GetColor(GetPColor(sprite[x][y])), GetColor(GetPColor(sprite[x][y])));
-
 			}        
 		}
 		GuiFileDialog(&fileDialogState);
