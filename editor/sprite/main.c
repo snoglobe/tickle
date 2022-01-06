@@ -189,7 +189,7 @@ int main(int argc, char* argv[])
 			fwrite(sprite, sizeof(char), sizeof(sprite), f);
 			fclose(f);
 		}
-		if ( GuiButton( (Rectangle){ 170, 20, 36, 24 }, "#22#" ) ){
+		if ( GuiButton( (Rectangle){ 170, 20, 36, 24 }, "#23#" ) ){
 			tool = 0;
 			toolName = "Pencil";
 		}
