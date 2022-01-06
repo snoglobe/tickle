@@ -127,6 +127,7 @@ int main(int argc, char* argv[])
     bool grid = true;
 	int tool = 0; // 0 = pencil, 1 = eraser
 	char *toolName = "Pencil";
+	bool lockedControls = false;
 
 	for(int x = 0; x < 16; x++){
 		for(int y = 0; y < 16; y++){
@@ -140,6 +141,7 @@ int main(int argc, char* argv[])
 	{
         if (fileDialogState.SelectFilePressed)
         {
+			
             // Load image file (if supported extension)
             if (IsFileExtension(fileDialogState.fileNameText, ".tx"))
             {
@@ -157,6 +159,7 @@ int main(int argc, char* argv[])
 					}
 				}
 				fclose(f);
+				lockedControls = false;
             }
 
             fileDialogState.SelectFilePressed = false;
@@ -170,7 +173,7 @@ int main(int argc, char* argv[])
 		for(int x = 0; x < 8; x++) {
 			for(int y = 0; y < 2; y++) {
 				if(GuiButton((Rectangle){290 + (x * 25), 20 + (y * 26), 24, 24}, "")) {
-					pickedColor = y > 0 ? x + 8 : x;
+					if (!lockedControls) pickedColor = y > 0 ? x + 8 : x;
 				}
 			}        
 		}
@@ -182,37 +185,37 @@ int main(int argc, char* argv[])
 		GuiDrawRectangle((Rectangle){0, 502, 512, 10}, 1, GetColor(GetPColor(pickedColor)), GetColor(GetPColor(pickedColor)));
 		if ( GuiButton( (Rectangle){ 20, 20, 70, 50 }, "#01#Load" ) ){
 			fileDialogState.fileDialogActive = true;
-			
+			lockedControls = true;
 		}
-		if ( GuiButton( (Rectangle){ 95, 20, 70, 50 }, "#02#Save" ) ){
+		if ( GuiButton( (Rectangle){ 95, 20, 70, 50 }, "#02#Save" )&& !lockedControls ){
 			FILE *f = fopen(fileDialogState.fileNameText, "wb");
 			fwrite(sprite, sizeof(char), sizeof(sprite), f);
 			fclose(f);
 		}
-		if ( GuiButton( (Rectangle){ 170, 20, 36, 24 }, "#23#" ) ){
+		if ( GuiButton( (Rectangle){ 170, 20, 36, 24 }, "#23#" )&& !lockedControls ){
 			tool = 0;
 			toolName = "Pencil";
 		}
-		if ( GuiButton( (Rectangle){ 170, 46, 36, 24 }, "#28#" ) ){
+		if ( GuiButton( (Rectangle){ 170, 46, 36, 24 }, "#28#" )&& !lockedControls ){
 			tool = 1;
 			toolName = "Eraser";
 		}
-		if ( GuiButton( (Rectangle){ 211, 20, 35, 24 }, "#29#" ) ){
+		if ( GuiButton( (Rectangle){ 211, 20, 35, 24 }, "#29#" )&& !lockedControls ){
 			tool = 2;
 			toolName = "Fill";
 		}
-		if ( GuiButton( (Rectangle){ 211, 46, 35, 24 }, "#25#" ) ){
+		if ( GuiButton( (Rectangle){ 211, 46, 35, 24 }, "#25#" )&& !lockedControls ){
 			tool = 3;
 			toolName = "Replace";
 		}
-		if ( GuiButton( (Rectangle){ 251, 20, 35, 24 }, "#143#" ) ){
+		if ( GuiButton( (Rectangle){ 251, 20, 35, 24 }, "#143#" )&& !lockedControls ){
 			for(int x = 0; x < 16; x++){
 				for(int y = 0; y < 16; y++){
 					sprite[x][y] = 17;
 				}
 			}
 		}
-        if ( GuiButton( (Rectangle){ 251, 46, 35, 24 }, "#97#" ) ){
+        if ( GuiButton( (Rectangle){ 251, 46, 35, 24 }, "#97#" )&& !lockedControls ){
 			grid = !grid;
 		}
 
@@ -221,7 +224,7 @@ int main(int argc, char* argv[])
 				Vector2 mousePoint = GetMousePosition();
 				if (CheckCollisionPointRec(mousePoint, (Rectangle){55 + (x * 25), 90 + (y * 25), 24, 24}))
 				{
-					if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
+					if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !lockedControls){
 						if(!tool){
 							sprite[x][y] = pickedColor;
 						} else if (tool == 1) {
@@ -236,9 +239,9 @@ int main(int argc, char* argv[])
 							}
 						}
 					}
-					if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && tool == 0) sprite[x][y] = 17;
-					if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && tool == 2) floodFill(sprite, x, y, sprite[x][y], 17);
-					if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && tool == 3) replaceColor(sprite, x, y, sprite[x][y], 17);
+					if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && tool == 0 && !lockedControls) sprite[x][y] = 17;
+					if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && tool == 2 && !lockedControls) floodFill(sprite, x, y, sprite[x][y], 17);
+					if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && tool == 3 && !lockedControls) replaceColor(sprite, x, y, sprite[x][y], 17);
 				}
 				GuiDrawRectangle((Rectangle){55 + (x * 25), 90 + (y * 25), 25, 25}, 1, 
                     grid ? (x + y) % 2 == 0 ? GetColor(TLGREY) : GetColor(TDGREY)

@@ -256,7 +256,7 @@ void GuiFileDialog(GuiFileDialogState *state)
         DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)), 0.85f));
         state->fileDialogActive = !GuiWindowBox((Rectangle){ state->position.x + 0, state->position.y + 0, winWidth, winHeight }, "#198# Select File Dialog");
 
-        if (GuiButton((Rectangle){ state->position.x + winWidth - 50, state->position.y + 35, 40, 25 }, "< ..")) // || IsKeyReleased(KEY_DPAD_Y))
+        if (GuiButton((Rectangle){ state->position.x + winWidth - 50, state->position.y + 35, 40, 25 }, "#117#")) // || IsKeyReleased(KEY_DPAD_Y))
         {
             // Move dir path one level up
             strcpy(state->dirPathText, GetPrevDirectoryPath(state->dirPathText));
@@ -356,7 +356,9 @@ void GuiFileDialog(GuiFileDialogState *state)
             state->fileNameEditMode = !state->fileNameEditMode;
         }
 
-        state->fileTypeActive = GuiComboBox((Rectangle){ state->position.x + 75, state->position.y  + winHeight - 30, winWidth - 200, 25 }, "All files", state->fileTypeActive);
+        state->fileTypeActive = GuiComboBox((Rectangle){ state->position.x + 75, state->position.y  + winHeight - 30, winWidth - 200, 25 }, ".tx Tixel Sprite;All Files", state->fileTypeActive);
+        //     if (!state->fileTypeActive){ strcpy(state->filterExt, ".tx"); FD_RELOAD_DIRPATH(state); }
+        // else strcpy(state->filterExt, "All Files"); FD_RELOAD_DIRPATH(state);
         GuiLabel((Rectangle){ state->position.x + 10, state->position.y + winHeight - 30, 68, 25 }, "File filter:");
 
         state->SelectFilePressed = GuiButton((Rectangle){ state->position.x + winWidth - 120, state->position.y + winHeight - 60, 110,
@@ -370,7 +372,7 @@ void GuiFileDialog(GuiFileDialogState *state)
         if (state->SelectFilePressed) state->fileDialogActive = false;
 
 #ifdef PLATFORM_DESKTOP
-        if (GuiButton((Rectangle){ state->position.x + winWidth - 120, state->position.y + winHeight - 30, 110, 25 }, "Quit")) state->fileDialogActive = false;
+        if (GuiButton((Rectangle){ state->position.x + winWidth - 120, state->position.y + winHeight - 30, 110, 25 }, "Cancel")) state->fileDialogActive = false;
 #endif
 
         // File dialog has been closed!
