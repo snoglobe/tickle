@@ -237,6 +237,8 @@ int main(int argc, char* argv[])
 						}
 					}
 					if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && tool == 0) sprite[x][y] = 17;
+					if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && tool == 2) floodFill(sprite, x, y, sprite[x][y], 17);
+					if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && tool == 3) replaceColor(sprite, x, y, sprite[x][y], 17);
 				}
 				GuiDrawRectangle((Rectangle){55 + (x * 25), 90 + (y * 25), 25, 25}, 1, 
                     grid ? (x + y) % 2 == 0 ? GetColor(TLGREY) : GetColor(TDGREY)
