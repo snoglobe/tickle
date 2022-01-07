@@ -202,7 +202,7 @@ GuiFileDialogState InitGuiFileDialog(int width, int height, const char *initPath
     strcpy(state.dirPathTextCopy, state.dirPathText);
     strcpy(state.fileNameTextCopy, state.fileNameText);
 
-    strcpy(state.filterExt, "all");
+    strcpy(state.filterExt, ".tx");
 
     state.dirFilesCount = 0;
     state.dirFiles = NULL;      // NOTE: Loaded lazily on window active
@@ -256,7 +256,7 @@ void GuiFileDialog(GuiFileDialogState *state)
         DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)), 0.85f));
         state->fileDialogActive = !GuiWindowBox((Rectangle){ state->position.x + 0, state->position.y + 0, winWidth, winHeight }, "#198# Select File Dialog");
 
-        if (GuiButton((Rectangle){ state->position.x + winWidth - 50, state->position.y + 35, 40, 25 }, "#117#")) // || IsKeyReleased(KEY_DPAD_Y))
+        if (GuiButton((Rectangle){ state->position.x + winWidth - 50 - 5, state->position.y + 35, 20, 25 }, "#117#")) // || IsKeyReleased(KEY_DPAD_Y))
         {
             // Move dir path one level up
             strcpy(state->dirPathText, GetPrevDirectoryPath(state->dirPathText));
@@ -269,7 +269,11 @@ void GuiFileDialog(GuiFileDialogState *state)
             strcpy(state->fileNameTextCopy, state->fileNameText);
         }
 
-        if (GuiTextBox((Rectangle){ state->position.x + 10, state->position.y + 35, winWidth - 65, 25 }, state->dirPathText, 256, state->dirPathEditMode))
+        if (GuiButton((Rectangle){ state->position.x + winWidth - 50 + 20, state->position.y + 35, 20, 25 }, "#58#")) // || IsKeyReleased(KEY_DPAD_Y))
+        {
+            FD_RELOAD_DIRPATH(state);
+        }
+        if (GuiTextBox((Rectangle){ state->position.x + 10, state->position.y + 35, winWidth - 70, 25 }, state->dirPathText, 256, state->dirPathEditMode))
         {
             if (state->dirPathEditMode)
             {
