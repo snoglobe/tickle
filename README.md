@@ -10,4 +10,5 @@ The tickle binary must be run with a game.tcl file present in the directory or i
 
 # DEPENDENCIES
 * [jim](https://jim.tcl.tk)
-* raylib
+* [raylib](https://github.com/raysan5/raygui/releases/)
+* [raygui](https://github.com/raysan5/raylib/releases/)
