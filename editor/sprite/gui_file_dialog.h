@@ -147,6 +147,7 @@ typedef char *FileInfo;
 // Global Variables Definition
 //----------------------------------------------------------------------------------
 FileInfo *dirFilesIcon = NULL;
+bool useExtFilter = false;
 
 //----------------------------------------------------------------------------------
 // Internal Module Functions Definition
@@ -202,7 +203,7 @@ GuiFileDialogState InitGuiFileDialog(int width, int height, const char *initPath
     strcpy(state.dirPathTextCopy, state.dirPathText);
     strcpy(state.fileNameTextCopy, state.fileNameText);
 
-    strcpy(state.filterExt, ".tx");
+    strcpy(state.filterExt, "all tx");
 
     state.dirFilesCount = 0;
     state.dirFiles = NULL;      // NOTE: Loaded lazily on window active
@@ -361,8 +362,8 @@ void GuiFileDialog(GuiFileDialogState *state)
         }
 
         state->fileTypeActive = GuiComboBox((Rectangle){ state->position.x + 75, state->position.y  + winHeight - 30, winWidth - 200, 25 }, ".tx Tixel Sprite;All Files", state->fileTypeActive);
-        //     if (!state->fileTypeActive){ strcpy(state->filterExt, ".tx"); FD_RELOAD_DIRPATH(state); }
-        // else strcpy(state->filterExt, "All Files"); FD_RELOAD_DIRPATH(state);
+            if (!state->fileTypeActive){ strcpy(state->filterExt, ".tx"); FD_RELOAD_DIRPATH(state); useExtFilter = true; }
+        else strcpy(state->filterExt, "All Files"); FD_RELOAD_DIRPATH(state); useExtFilter = false;
         GuiLabel((Rectangle){ state->position.x + 10, state->position.y + winHeight - 30, 68, 25 }, "File filter:");
 
         state->SelectFilePressed = GuiButton((Rectangle){ state->position.x + winWidth - 120, state->position.y + winHeight - 60, 110,
@@ -420,7 +421,7 @@ static char **ReadDirectoryFiles(const char *dir, int *filesCount, char *filterE
     char **validFiles = (char **)RL_MALLOC(MAX_DIRECTORY_FILES*sizeof(char *));    // Max files to read
     for (int i = 0; i < MAX_DIRECTORY_FILES; i++) validFiles[i] = (char *)RL_MALLOC(MAX_DIR_PATH_LENGTH);    // Max file name length
 
-    int filterExtCount = 0;
+    int filterExtCount = 1;
     const char **extensions = GuiTextSplit(filterExt, &filterExtCount, NULL);
     bool filterExtensions = true;
 
@@ -460,7 +461,8 @@ static char **ReadDirectoryFiles(const char *dir, int *filesCount, char *filterE
         }
     }
 
-    if (TextIsEqual(extensions[0], "all")) filterExtensions = false;
+    // if (useExtFilter) filterExtensions = true;
+    // else filterExtensions = false;
 
     for (int i = 0; (i < dirFilesCount) && (validFilesCount < MAX_DIRECTORY_FILES); i++)
     {
@@ -492,7 +494,7 @@ static char **ReadDirectoryFiles(const char *dir, int *filesCount, char *filterE
                 {
                     // TODO: Assign custom filetype icons depending on file extension (image, audio, text, video, models...)
 
-                    if (IsFileExtension(files[i], ".png")) strcpy(dirFilesIcon[validFilesCount], TextFormat("#%i#%s", 12, files[i]));
+                    if (IsFileExtension(files[i], ".tx")) strcpy(dirFilesIcon[validFilesCount], TextFormat("#%i#%s", 12, files[i]));
                     else strcpy(dirFilesIcon[validFilesCount], TextFormat("#%i#%s", 10, files[i]));
 
                     validFilesCount++;
