@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	GuiLoadStyle("tickle.rgs");
+	GuiLoadStyle("theme.rgs");
 
 	while (!WindowShouldClose())
 	{

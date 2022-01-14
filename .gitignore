@@ -1,7 +1,5 @@
 /.vscode
 /game.tcl
-/test.png
-q.bat
-a.exe
+/
 *.exe
 main.tcl
